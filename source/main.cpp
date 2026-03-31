@@ -373,8 +373,8 @@ int main(int argc, char* argv[]) {
 
             // Tunggu user tekan +
             while (appletMainLoop()) {
-                hidScanInput();
-                if (hidKeysDown(CONTROLLER_P1_AUTO) & KEY_PLUS) break;
+                padUpdate(&s_pad);
+                if (padGetButtonsDown(&s_pad) & HidNpadButton_Plus) break;
             }
             break;
         }

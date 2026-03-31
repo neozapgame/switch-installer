@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Switch Install Server</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Top bar -->
+  <div id="topbar">
+    <h1>&#9654; SWITCH INSTALL SERVER</h1>
+    <div class="spacer"></div>
+    <button class="btn" id="btn-refresh-lib">&#8635; Refresh Library</button>
+  </div>
+
+  <div id="main">
+
+    <!-- ── Library Panel (kiri) ── -->
+    <div id="library-panel">
+      <div id="lib-toolbar">
+        <input type="text" id="lib-search" placeholder="Cari... (ketik langsung)" autocomplete="off" spellcheck="false">
+        <button class="btn" id="btn-load-txt" title="Load dari file .txt">&#128196; .txt</button>
+      </div>
+      <div id="lib-path">Belum ada folder dipilih</div>
+      <div id="lib-list" tabindex="0"></div>
+      <div id="lib-statusbar">0 file &nbsp;|&nbsp; 0 terpilih</div>
+    </div>
+
+    <!-- ── Resizer ── -->
+    <div id="resizer"></div>
+
+    <!-- ── Right Panel ── -->
+    <div id="right-panel">
+      <div id="tabs">
+        <div class="tab active" data-tab="usb">USB Install</div>
+        <div class="tab" data-tab="settings">Settings</div>
+      </div>
+
+      <!-- USB Install -->
+      <div class="tab-content active" id="tab-usb">
+        <div id="usb-toolbar" style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+          <button class="btn primary" id="btn-usb-refresh">&#8635; Refresh</button>
+          <span style="font-size:11px;color:var(--text-dim)">Pilih Switch → Mark game → <b style="color:var(--accent)">Send USB</b></span>
+          <div class="spacer"></div>
+          <button class="btn success" id="btn-usb-send" disabled>&#9654; Send USB</button>
+        </div>
+        <div id="usb-switch-list"></div>
+      </div>
+
+      <!-- Settings -->
+      <div class="tab-content" id="tab-settings">
+        <form id="settings-form" onsubmit="return false">
+          <div class="form-row">
+            <label>Folder Game (NSP/XCI/NSZ)</label>
+            <div class="input-group">
+              <input type="text" id="set-game-folder" placeholder="/games" spellcheck="false">
+              <button class="btn" id="btn-browse-folder">&#128193; Browse</button>
+            </div>
+          </div>
+          <button class="btn success" id="btn-save-settings">&#10003; Simpan Settings</button>
+        </form>
+      </div>
+
+    </div><!-- /right-panel -->
+  </div><!-- /main -->
+
+  <!-- Bottom command bar -->
+  <div id="cmdbar">
+    <div class="cmd-key" id="cmd-ins"><span class="key">Ins</span><span class="label">Mark</span></div>
+    <div class="cmd-key" id="cmd-space"><span class="key">Spasi</span><span class="label">Mark</span></div>
+    <div class="cmd-key" id="cmd-selall"><span class="key">Ctrl+A</span><span class="label">Pilih Semua</span></div>
+    <div class="cmd-key" id="cmd-selclear"><span class="key">Ctrl+D</span><span class="label">Batal Semua</span></div>
+    <div class="cmd-key" id="cmd-loadtxt"><span class="key">Ctrl+L</span><span class="label">Load .txt</span></div>
+    <div class="spacer"></div>
+    <div id="dash-status" style="font-size:11px;color:var(--text-dim);padding:0 12px;align-self:center">Idle</div>
+  </div>
+
+  <div id="toast-container"></div>
+  <input type="file" id="file-input-txt" accept=".txt" style="display:none">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/hyperlist@1.0.0/dist/hyperlist.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

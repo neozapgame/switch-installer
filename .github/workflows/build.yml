@@ -13,6 +13,11 @@ jobs:
     container:
       image: devkitpro/devkita64:latest
 
+    env:
+      DEVKITPRO: /opt/devkitpro
+      DEVKITA64: /opt/devkitpro/devkitA64
+      PATH: /opt/devkitpro/devkitA64/bin:/opt/devkitpro/tools/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4

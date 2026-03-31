@@ -31,7 +31,9 @@ LIBS    := -lnx
 #---------------------------------------------------------------------------------
 # list of directories containing libraries
 #---------------------------------------------------------------------------------
-LIBDIRS := $(PORTLIBS) $(LIBNX)
+PORTLIBS := $(DEVKITPRO)/portlibs/switch
+LIBNX    := $(DEVKITPRO)/libnx
+LIBDIRS  := $(PORTLIBS) $(LIBNX)
 
 #---------------------------------------------------------------------------------
 # no changes below here unless you know what you are doing

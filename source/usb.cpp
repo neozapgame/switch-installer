@@ -69,9 +69,9 @@ UsbResult usbInit() {
     if (R_FAILED(rc)) { usbDsExit(); return USB_ERROR; }
 
     // Tunggu host konek
-    u32 state = 0;
+    UsbState state = UsbState_Detached;
     u64 elapsed = 0;
-    while (state != 5) {  // 5 = configured
+    while (state != UsbState_Configured) {
         usbDsGetState(&state);
         svcSleepThread(USB_RETRY_NS);
         elapsed += USB_RETRY_NS;
@@ -104,7 +104,7 @@ UsbResult usbRead(void* buf, size_t size, u64 timeoutNs) {
     rc = usbDsEndpoint_GetReportData(s_endpointOut, &reportData);
     if (R_FAILED(rc)) return USB_ERROR;
 
-    rc = usbDsReportData_GetReportCount(&reportData, &transferred);
+    rc = usbDsParseReportData(&reportData, urbId, NULL, &transferred);
     if (R_FAILED(rc) || transferred == 0) return USB_ERROR;
 
     return USB_OK;
@@ -112,7 +112,7 @@ UsbResult usbRead(void* buf, size_t size, u64 timeoutNs) {
 
 UsbResult usbWrite(const void* buf, size_t size, u64 timeoutNs) {
     UsbDsReportData reportData;
-    u32 urbId, transferred;
+    u32 urbId;
     Result rc;
 
     rc = usbDsEndpoint_PostBufferAsync(s_endpointIn, (void*)buf, size, &urbId);

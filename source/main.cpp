@@ -8,6 +8,9 @@
 
 #include "usb.h"
 
+// ─── Pad state ──────────────────────────────────────────────────────────────
+static PadState s_pad;
+
 // ─── Config ──────────────────────────────────────────────────────────────────
 #define QUEUE_FILE      "sdmc:/switch/switch-installer/queue.txt"
 #define GAMES_DIR       "sdmc:/switch/switch-installer/"
@@ -116,7 +119,6 @@ static bool loadQueue() {
         // Cek apakah file ada di SD card
         // Format: bisa full path atau nama file saja
         std::string filepath;
-        struct stat st;
 
         if (line[0] == '/' || strncmp(line, "sdmc:", 5) == 0) {
             filepath = line;
@@ -199,9 +201,9 @@ static bool runSession() {
 
     while (s_running) {
         // Cek input user
-        hidScanInput();
-        u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
-        if (kDown & KEY_PLUS) {
+        padUpdate(&s_pad);
+        u64 kDown = padGetButtonsDown(&s_pad);
+        if (kDown & HidNpadButton_Plus) {
             s_running = false;
             break;
         }
@@ -287,8 +289,10 @@ static bool runSession() {
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 int main(int argc, char* argv[]) {
-    // Init console
+    // Init console & pad
     consoleInit(nullptr);
+    padConfigureInput(1, HidNpadStyleSet_NpadStandard);
+    padInitializeDefault(&s_pad);
     clearScreen();
     printHeader();
 
@@ -315,8 +319,8 @@ int main(int argc, char* argv[]) {
 
         // Tunggu user tekan +
         while (appletMainLoop()) {
-            hidScanInput();
-            if (hidKeysDown(CONTROLLER_P1_AUTO) & KEY_PLUS) break;
+            padUpdate(&s_pad);
+            if (padGetButtonsDown(&s_pad) & HidNpadButton_Plus) break;
         }
 
         nsExit();
@@ -331,8 +335,8 @@ int main(int argc, char* argv[]) {
     // Init USB dan tunggu konek ke NAS
     int usbRetry = 0;
     while (s_running && appletMainLoop()) {
-        hidScanInput();
-        if (hidKeysDown(CONTROLLER_P1_AUTO) & KEY_PLUS) break;
+        padUpdate(&s_pad);
+        if (padGetButtonsDown(&s_pad) & HidNpadButton_Plus) break;
 
         UsbResult r = usbInit();
         if (r == USB_OK) {
@@ -351,8 +355,8 @@ int main(int argc, char* argv[]) {
     // Main loop — session + auto retry
     int sessionRetry = 0;
     while (s_running && appletMainLoop()) {
-        hidScanInput();
-        if (hidKeysDown(CONTROLLER_P1_AUTO) & KEY_PLUS) break;
+        padUpdate(&s_pad);
+        if (padGetButtonsDown(&s_pad) & HidNpadButton_Plus) break;
 
         // Cek apakah semua sudah selesai
         auto pending = getPendingFilenames();

@@ -10,26 +10,27 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkita64:latest
+
+    env:
+      DEVKITPRO: /opt/devkitpro
+      DEVKITA64: /opt/devkitpro/devkitA64
+      PATH: /opt/devkitpro/devkitA64/bin:/opt/devkitpro/tools/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Install devkitPro toolchain
+    - name: Install libnx from source
       run: |
-        sudo apt-get update -qq
-        sudo apt-get install -y wget gnupg
-        wget -q https://apt.devkitpro.org/install-devkitpro-pacman
-        chmod +x install-devkitpro-pacman
-        sudo ./install-devkitpro-pacman
-        sudo dkp-pacman -Sy --noconfirm switch-dev
+        apt-get update -qq && apt-get install -y -qq git make > /dev/null 2>&1 || true
+        git clone --depth 1 https://github.com/switchbrew/libnx.git /tmp/libnx
+        cd /tmp/libnx
+        make -j$(nproc) install
 
     - name: Build
-      env:
-        DEVKITPRO: /opt/devkitpro
-        DEVKITA64: /opt/devkitpro/devkitA64
       run: |
-        export PATH=$DEVKITPRO/devkitA64/bin:$DEVKITPRO/tools/bin:$PATH
         make -j$(nproc)
 
     - name: Upload NRO

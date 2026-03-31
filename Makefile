@@ -49,7 +49,6 @@ CFILES      := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CPPFILES    := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES      := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 
-export LD   := $(CXX)
 export OFILES_SOURCES := $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
 export OFILES         := $(OFILES_SOURCES)
 
@@ -76,6 +75,8 @@ clean:
 else
 
 include $(DEVKITPRO)/libnx/switch_rules
+
+export LD := $(CXX)
 
 DEPENDS := $(OFILES:.o=.d)
 

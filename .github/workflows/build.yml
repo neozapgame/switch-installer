@@ -24,7 +24,16 @@ jobs:
 
     - name: Install libnx
       run: |
-        dkp-pacman -Sy --noconfirm switch-dev
+        dkp-pacman -Sy --noconfirm switch-dev libnx
+
+    - name: Debug env
+      run: |
+        echo "DEVKITPRO=$DEVKITPRO"
+        echo "DEVKITA64=$DEVKITA64"
+        ls -la $DEVKITPRO/libnx/switch_rules 2>&1 || echo "switch_rules NOT FOUND"
+        ls $DEVKITPRO/libnx/ 2>&1 || echo "libnx dir NOT FOUND"
+        cat Makefile
+        make -n 2>&1 || echo "make -n failed"
 
     - name: Build
       run: |
